@@ -1,6 +1,9 @@
 var mongoose = require('mongoose');
+var util = require('./util');
 
-var salaSchema = mongoose.Schema({
+var __maxKeyValue = 255;
+
+var __schema = mongoose.Schema({
 	
 	key:{
 		type: Number,
@@ -9,42 +12,36 @@ var salaSchema = mongoose.Schema({
 
 	name:{
 		type: String,
-		//validation
 		required: true
 	}
 });
 
-var Sala = module.exports = mongoose.model('Sala', SalaSchema);
+var __dao = module.exports = mongoose.model('Sala', __schema);
 
-//get Sala
-module.exports.getSala = function (callback, limit){
-	Sala.find(callback).limit(limit);
+module.exports.getAll = function (callback) {
+	__dao.find(callback).limit(null);
 }
 
-//get a single Bloc
-module.exports.getSalaById = function (id, callback){
-	Sala.findById(id, callback);
+module.exports.getById = function (id, callback) {
+	__dao.findById(id, callback);
 }
 
-//add a Sala
-module.exports.addSala = function (sala, callback){
-	Sala.create(sala, callback);
+module.exports.getByKey = function (key, callback) {
+	__dao.find({key: key}, callback);
 }
 
-//update a Sala
-module.exports.updateSala = function (id, sala, options, callback){
-	//query to get the id, comparing the Sala id with the id from the bd
-	var query = {_id : id};
-	var update ={
-		name		: sala.name
-	};
-	
-	Sala.findOneAndUpdate(query, update, options, callback);
+module.exports.add = function (object, callback) {
+	util.addWithKey(__dao, object, __maxKeyValue, callback);
 }
 
-//delete a Sala
-module.exports.deleteSala = function (id, callback){
-	//query to get the id, comparing the Sala id with the id from the bd
-	var query = {_id : id};
-	Sala.remove(query, callback);
+module.exports.update = function (key, object, options, callback)  {
+	__dao.findOneAndUpdate({key : key}, object, options, callback);
+}
+
+module.exports.delete = function (key, callback){
+	__dao.remove({key : key}, callback);
+}
+
+module.exports.deleteAll = function (callback){
+	__dao.remove({}, callback);
 }

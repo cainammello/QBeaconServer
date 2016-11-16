@@ -1,6 +1,9 @@
 var mongoose = require('mongoose');
+var util = require('./util');
 
-var instituicaoSchema = mongoose.Schema({
+var __maxKeyValue = 255;
+
+var __schema = mongoose.Schema({
 	
 	key:{
 		type: Number,
@@ -9,42 +12,36 @@ var instituicaoSchema = mongoose.Schema({
 
 	name:{
 		type: String,
-		//validation
 		required: true
 	}
 });
 
-var Instituicao = module.exports = mongoose.model('Instituicao', InstituicaoSchema);
+var __dao = module.exports = mongoose.model('Instituicao', __schema);
 
-//get Instituicao
-module.exports.getInstituicao = function (callback, limit){
-	Instituicao.find(callback).limit(limit);
+module.exports.getAll = function (callback) {
+	__dao.find(callback).limit(null);
 }
 
-//get a single Bloc
-module.exports.getInstituicaoById = function (id, callback){
-	Instituicao.findById(id, callback);
+module.exports.getById = function (id, callback) {
+	__dao.findById(id, callback);
 }
 
-//add a Instituicao
-module.exports.addInstituicao = function (instituicao, callback){
-	Instituicao.create(instituicao, callback);
+module.exports.getByKey = function (key, callback) {
+	__dao.find({key: key}, callback);
 }
 
-//update a Instituicao
-module.exports.updateInstituicao = function (id, instituicao, options, callback){
-	//query to get the id, comparing the Instituicao id with the id from the bd
-	var query = {_id : id};
-	var update ={
-		name		: instituicao.name
-	};
-	
-	Instituicao.findOneAndUpdate(query, update, options, callback);
+module.exports.add = function (object, callback) {
+	util.addWithKey(__dao, object, __maxKeyValue, callback);
 }
 
-//delete a Instituicao
-module.exports.deleteInstituicao = function (id, callback){
-	//query to get the id, comparing the Instituicao id with the id from the bd
-	var query = {_id : id};
-	Instituicao.remove(query, callback);
+module.exports.update = function (key, object, options, callback)  {
+	__dao.findOneAndUpdate({key : key}, object, options, callback);
+}
+
+module.exports.delete = function (key, callback){
+	__dao.remove({key : key}, callback);
+}
+
+module.exports.deleteAll = function (callback){
+	__dao.remove({}, callback);
 }

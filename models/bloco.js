@@ -1,7 +1,9 @@
 var mongoose = require('mongoose');
 var util = require('./util');
 
-var blocoSchema = mongoose.Schema({
+var __maxKeyValue = 255;
+
+var __schema = mongoose.Schema({
 	
 	key:{
 		type: Number,
@@ -10,42 +12,36 @@ var blocoSchema = mongoose.Schema({
 
 	name:{
 		type: String,
-		//validation
 		required: true
 	}
 });
 
-var Bloco = module.exports = mongoose.model('Bloco', blocoSchema);
+var __dao = module.exports = mongoose.model('Bloco', __schema);
 
-//get Bloco
-module.exports.getBloco = function (callback, limit){
-	Bloco.find(callback).limit(limit);
+module.exports.getAll = function (callback) {
+	__dao.find(callback).limit(null);
 }
 
-//get a single Bloc
-module.exports.getBlocoById = function (id, callback){
-	Bloco.findById(id, callback);
+module.exports.getById = function (id, callback) {
+	__dao.findById(id, callback);
 }
 
-//add a Bloco
-module.exports.addBloco = function (bloco, callback){
-    util.addWithKey(Bloco, bloco, 255, callback);
+module.exports.getByKey = function (key, callback) {
+	__dao.find({key: key}, callback);
 }
 
-//update a bloco
-module.exports.updateBloco = function (id, bloco, options, callback){
-	//query to get the id, comparing the bloco id with the id from the bd
-	var query = {_id : id};
-	var update ={
-		name		: bloco.name
-	};
-	
-	Bloco.findOneAndUpdate(query, update, options, callback);
+module.exports.add = function (object, callback) {
+	util.addWithKey(__dao, object, __maxKeyValue, callback);
 }
 
-//delete a bloco
-module.exports.deleteBloco = function (id, callback){
-	//query to get the id, comparing the bloco id with the id from the bd
-	var query = {_id : id};
-	Bloco.remove(query, callback);
+module.exports.update = function (key, object, options, callback)  {
+	__dao.findOneAndUpdate({key : key}, object, options, callback);
+}
+
+module.exports.delete = function (key, callback){
+	__dao.remove({key : key}, callback);
+}
+
+module.exports.deleteAll = function (callback){
+	__dao.remove({}, callback);
 }

@@ -1,6 +1,9 @@
 var mongoose = require('mongoose');
+var util = require('./util');
 
-var disciplinaSchema = mongoose.Schema({
+var __maxKeyValue = 255;
+
+var __schema = mongoose.Schema({
 	
 	key:{
 		type: Number,
@@ -9,42 +12,36 @@ var disciplinaSchema = mongoose.Schema({
 
 	name:{
 		type: String,
-		//validation
 		required: true
 	}
 });
 
-var Disciplina = module.exports = mongoose.model('Disciplina', DisciplinaSchema);
+var __dao = module.exports = mongoose.model('Disciplina', __schema);
 
-//get Disciplina
-module.exports.getDisciplina = function (callback, limit){
-	Disciplina.find(callback).limit(limit);
+module.exports.getAll = function (callback) {
+	__dao.find(callback).limit(null);
 }
 
-//get a single Bloc
-module.exports.getDisciplinaById = function (id, callback){
-	Disciplina.findById(id, callback);
+module.exports.getById = function (id, callback) {
+	__dao.findById(id, callback);
 }
 
-//add a Disciplina
-module.exports.addDisciplina = function (disciplina, callback){
-	Disciplina.create(disciplina, callback);
+module.exports.getByKey = function (key, callback) {
+	__dao.find({key: key}, callback);
 }
 
-//update a Disciplina
-module.exports.updateDisciplina = function (id, disciplina, options, callback){
-	//query to get the id, comparing the Disciplina id with the id from the bd
-	var query = {_id : id};
-	var update ={
-		name		: disciplina.name
-	};
-	
-	Disciplina.findOneAndUpdate(query, update, options, callback);
+module.exports.add = function (object, callback) {
+	util.addWithKey(__dao, object, __maxKeyValue, callback);
 }
 
-//delete a Disciplina
-module.exports.deleteDisciplina = function (id, callback){
-	//query to get the id, comparing the Disciplina id with the id from the bd
-	var query = {_id : id};
-	Disciplina.remove(query, callback);
+module.exports.update = function (key, object, options, callback)  {
+	__dao.findOneAndUpdate({key : key}, object, options, callback);
+}
+
+module.exports.delete = function (key, callback){
+	__dao.remove({key : key}, callback);
+}
+
+module.exports.deleteAll = function (callback){
+	__dao.remove({}, callback);
 }

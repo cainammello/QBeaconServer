@@ -1,6 +1,9 @@
 var mongoose = require('mongoose');
+var util = require('./util');
 
-var campusSchema = mongoose.Schema({
+var __maxKeyValue = 255;
+
+var __schema = mongoose.Schema({
 	
 	key:{
 		type: Number,
@@ -9,42 +12,36 @@ var campusSchema = mongoose.Schema({
 
 	name:{
 		type: String,
-		//validation
 		required: true
 	}
 });
 
-var Campus = module.exports = mongoose.model('Campus', CampusSchema);
+var __dao = module.exports = mongoose.model('Campus', __schema);
 
-//get Campus
-module.exports.getCampus = function (callback, limit){
-	Campus.find(callback).limit(limit);
+module.exports.getAll = function (callback) {
+	__dao.find(callback).limit(null);
 }
 
-//get a single Bloc
-module.exports.getCampusById = function (id, callback){
-	Campus.findById(id, callback);
+module.exports.getById = function (id, callback) {
+	__dao.findById(id, callback);
 }
 
-//add a Campus
-module.exports.addCampus = function (campus, callback){
-	Campus.create(campus, callback);
+module.exports.getByKey = function (key, callback) {
+	__dao.find({key: key}, callback);
 }
 
-//update a Campus
-module.exports.updateCampus = function (id, campus, options, callback){
-	//query to get the id, comparing the Campus id with the id from the bd
-	var query = {_id : id};
-	var update ={
-		name		: campus.name
-	};
-	
-	Campus.findOneAndUpdate(query, update, options, callback);
+module.exports.add = function (object, callback) {
+	util.addWithKey(__dao, object, __maxKeyValue, callback);
 }
 
-//delete a Campus
-module.exports.deleteCampus = function (id, callback){
-	//query to get the id, comparing the Campus id with the id from the bd
-	var query = {_id : id};
-	Campus.remove(query, callback);
+module.exports.update = function (key, object, options, callback)  {
+	__dao.findOneAndUpdate({key : key}, object, options, callback);
+}
+
+module.exports.delete = function (key, callback){
+	__dao.remove({key : key}, callback);
+}
+
+module.exports.deleteAll = function (callback){
+	__dao.remove({}, callback);
 }
