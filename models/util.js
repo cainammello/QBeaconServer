@@ -1,3 +1,7 @@
+module.exports.models = [
+    "bloco", "campus", "disciplina", "docente", "instituicao", "sala", "util", "evento", historic
+];
+
 module.exports.getNewKey = function(model, maxKeyValue, callback) {
     maxKeyValue = maxKeyValue || 255;
     __getNewKey(model, maxKeyValue, 0, callback);

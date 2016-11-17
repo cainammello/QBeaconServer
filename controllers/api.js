@@ -2,9 +2,7 @@
 module.exports = function(app) {
     
     var __apiName = "api";
-    var __models = [
-        "bloco", "campus", "disciplina", "docente", "instituicao", "sala", "util"
-    ];
+    var __models = require("../models/util").models;
     
     __models.forEach(function(m) {
         
