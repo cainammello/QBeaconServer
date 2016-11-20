@@ -31,10 +31,14 @@ module.exports.getByKey = function (key, callback) {
 }
 
 module.exports.add = function (object, callback) {
-	util.addWithKey(__dao, object, __maxKeyValue, callback);
+    util.addWithKey(__dao, object, __maxKeyValue, function(err, o) {
+        callback(err, o);
+        util.addToHistoric("campus", o.key);
+    });
 }
 
 module.exports.update = function (key, object, options, callback)  {
+    util.addToHistoric("campus", key);
 	__dao.findOneAndUpdate({key : key}, object, options, callback);
 }
 

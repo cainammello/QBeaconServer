@@ -82,7 +82,7 @@ module.exports.generateMessage = function(key, callback) {
         if(err) {
             callback(null);
         } else {
-            var message "";
+            var message = "";
             message += String.fromCharCode(parseInt(object.keyBloco));
             message += String.fromCharCode(parseInt(object.keyCampus));
             message += String.fromCharCode(parseInt(object.keyDisciplina));

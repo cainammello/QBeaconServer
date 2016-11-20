@@ -14,8 +14,3 @@ app.get("/publish/:message", function(request, response) {
     mosca.publish("UFC/CAMPUS_QXD", message);
     response.send(message);
 });
-
-console.log("------- ");
-mosca.init(function(){
-    
-});

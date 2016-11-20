@@ -10,8 +10,13 @@ var __schema = mongoose.Schema({
         required: true
     }, 
     
-	keysUpdated: {
-		type: Array,
+    keyUpdated: {
+		type: Number,
+		required: true
+	},
+    
+	modelUpdated: {
+		type: String,
 		required: true
 	},
 
@@ -22,7 +27,7 @@ var __schema = mongoose.Schema({
     
 });
 
-var __dao = module.exports = mongoose.model('Historic', __schema);
+var __dao = module.exports = mongoose.model('Historico', __schema);
 
 module.exports.getAll = function (callback) {
 	__dao.find(callback).limit(null);
