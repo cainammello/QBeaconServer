@@ -1,5 +1,6 @@
 var app = require("./config/custom-express")();
 var mosca = require("./config/custom-mosca");
+var beaconUpdater = require('./controllers/beaconUpdater');
 var mongoose = require('mongoose');
 
 mongoose.connect('mongodb://localhost/qbeacon_db');
@@ -14,3 +15,6 @@ app.get("/publish/:message", function(request, response) {
     mosca.publish("UFC/CAMPUS_QXD", message);
     response.send(message);
 });
+
+mosca.init(function() {});
+beaconUpdater.start([2], mosca);

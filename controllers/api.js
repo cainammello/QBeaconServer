@@ -3,6 +3,18 @@ module.exports = function(app) {
     
     var __apiName = "api";
     var __models = require("../models/util").models;
+    var __historico = require("../models/historico");
+    
+    
+    app.get("/" + __apiName + "/recentHistoric/:timestamp" , function(request, response){
+        __historico.getMostRecentlyHistorics(request.params.timestamp, function(err, data){
+             if(err){
+                 console.log(__historico + " - Erro ao tentar obter historico de atualizações");
+             }else {
+                 response.json(data);
+             }
+        });
+    });
     
     __models.forEach(function(m) {
         
@@ -13,6 +25,7 @@ module.exports = function(app) {
             response.header('Access-Control-Allow-Origin', '*');
             response.header('Access-Control-Allow-Headers', 'Content-Type');
             response.header('Content-Type', 'application/json;charset=UTF-8');
+            response.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE');
             next();
         });
 

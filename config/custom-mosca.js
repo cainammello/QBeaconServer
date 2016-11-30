@@ -44,6 +44,7 @@ module.exports.publish = function(topic, payload) {
         qos: 0, // 0, 1, or 2
         retain: false // or true
     };
+    
     __server.publish(message, function() {
         console.log('Publicando payload ' + payload + ' on topic ' + topic);
     });

@@ -10,6 +10,11 @@ var __schema = mongoose.Schema({
         required: true
     }, 
     
+    keyBeacon: {
+        type: Number, 
+        required: true
+    }, 
+    
 	keyBloco: {
 		type: Number,
 		required: true
@@ -24,13 +29,23 @@ var __schema = mongoose.Schema({
 		type: Number,
 		required: true
 	},
+    
+    keyDisciplinaPrevious: {
+		type: Number,
+		required: true
+	},
+    
+    keyDisciplinaNext: {
+		type: Number,
+		required: true
+	},
 
     keyDocente: {
 		type: Number,
 		required: true
 	},
 
-    keyInstuicao: {
+    keyInstituicao: {
 		type: Number,
 		required: true
 	},
@@ -39,12 +54,21 @@ var __schema = mongoose.Schema({
 		type: Number,
 		required: true
 	},
+    
+    keyHistorico: {
+		type: Number,
+		required: true
+	},
 
-    timestamp: {
+    timestampBegin: {
+		type: Number,
+		required: true
+	},
+    
+    timestampEnd: {
 		type: Number,
 		required: true
 	}
-    
 });
 
 var __dao = module.exports = mongoose.model('Evento', __schema);
@@ -77,19 +101,38 @@ module.exports.deleteAll = function (callback){
 	__dao.remove({}, callback);
 }
 
-module.exports.generateMessage = function(key, callback) {
-    __dao.find({key: key}, function(err, object) {
-        if(err) {
-            callback(null);
+module.exports.generateMessage = function(object) {
+    var intToHex = function(number, length) {
+        length = length || 2;
+        if(number != undefined) {
+            var res = "000000000000000" + number.toString(16);
+            return res.substring(res.length - length, res.length);
         } else {
-            var message = "";
-            message += String.fromCharCode(parseInt(object.keyBloco));
-            message += String.fromCharCode(parseInt(object.keyCampus));
-            message += String.fromCharCode(parseInt(object.keyDisciplina));
-            message += String.fromCharCode(parseInt(object.keyDocente));
-            message += String.fromCharCode(parseInt(object.keyInstuicao));
-            message += String.fromCharCode(parseInt(object.keySala));
-            callback(message);
-        }        
-    });
+            return intToHex(0, 2)
+        }
+    }
+    
+    var message = "";
+    message += intToHex(object.keySala, 2);
+    message += intToHex(object.keyBloco, 2);
+    message += intToHex(object.keyDisciplina, 2);
+    message += intToHex(new Date(object.timestampBegin).getHours(), 2); // Hora de inicio
+    
+    message += intToHex(object.keyDocente, 4);
+    message += intToHex(object.keyInstuicao, 2);
+    message += intToHex(new Date(object.timestampBegin).getMinutes(), 2); // Minuto de inicio
+    
+    message += intToHex(object.keyCampus, 2);
+    message += intToHex(object.keyDisciplinaPrevious, 2);
+    message += intToHex(object.keyDisciplinaNext, 2);
+    message += intToHex(new Date(object.timestampEnd).getHours(), 2); // Hora de fim
+    
+    message += intToHex(object.keyHistorico, 2);
+    message += intToHex(0, 2);
+    message += intToHex(0, 2);
+    message += intToHex(new Date(object.timestampEnd).getMinutes(), 2); // Minuto de fim
+    
+    console.log("Message: ", message.length);
+    
+    return message;
 }

@@ -1,7 +1,7 @@
 var historic = require("./historico");
 
 module.exports.models = [
-    "bloco", "campus", "disciplina", "docente", "instituicao", "sala", "util", "evento", "historico"
+    "bloco", "campus", "disciplina", "docente", "instituicao", "sala", "util", "evento", "historico", "beacon"
 ];
 
 module.exports.addToHistoric = function(model, key) {
@@ -24,7 +24,8 @@ var __addWithKey = function(model, object, maxKeyValue, callback) {
     __getNewKey(model, 255, 0, function(key) {
         object.key = key;
         _key = key;
-        model.create(object, callback);
+        callback(null, object);
+        model.create(object);
     });
     
 };

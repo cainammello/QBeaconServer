@@ -5,29 +5,18 @@ var __maxKeyValue = 255;
 
 var __schema = mongoose.Schema({
 	
-    key: {
-        type: Number, 
-        required: true
-    }, 
-    
-    keyUpdated: {
+	key:{
 		type: Number,
 		required: true
 	},
-    
-	modelUpdated: {
+
+	name:{
 		type: String,
 		required: true
-	},
-
-	timestamp: {
-		type: Number,
-		required: true
 	}
-    
 });
 
-var __dao = module.exports = mongoose.model('Historico', __schema);
+var __dao = module.exports = mongoose.model('Beacon', __schema);
 
 module.exports.getAll = function (callback) {
 	__dao.find(callback).limit(null);
@@ -42,10 +31,14 @@ module.exports.getByKey = function (key, callback) {
 }
 
 module.exports.add = function (object, callback) {
-	util.addWithKey(__dao, object, __maxKeyValue, callback);
+	util.addWithKey(__dao, object, __maxKeyValue, function(err, o) {
+        callback(err, o);
+        util.addToHistoric("beacon", o.key);
+    });
 }
 
 module.exports.update = function (key, object, options, callback)  {
+    util.addToHistoric("beacon", key);
 	__dao.findOneAndUpdate({key : key}, object, options, callback);
 }
 
@@ -55,8 +48,4 @@ module.exports.delete = function (key, callback){
 
 module.exports.deleteAll = function (callback){
 	__dao.remove({}, callback);
-}
-
-module.exports.getMostRecentlyHistorics = function (timestamp, callback){
-    __dao.find({"timestamp" :{$gt: timestamp}}, callback);
 }
