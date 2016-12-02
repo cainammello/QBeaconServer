@@ -46,6 +46,6 @@ module.exports.publish = function(topic, payload) {
     };
     
     __server.publish(message, function() {
-        console.log('Publicando payload ' + payload + ' on topic ' + topic);
+        //console.log('Publicando payload ' + payload + ' on topic ' + topic);
     });
 };

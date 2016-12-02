@@ -33,6 +33,10 @@ module.exports.getAll = function (callback) {
 	__dao.find(callback).limit(null);
 }
 
+module.exports.getLast = function (callback) {
+	__dao.find(callback).sort( { timestamp : -1 }).limit(1);
+}
+
 module.exports.getById = function (id, callback) {
 	__dao.findById(id, callback);
 }

@@ -24,8 +24,10 @@ var __addWithKey = function(model, object, maxKeyValue, callback) {
     __getNewKey(model, 255, 0, function(key) {
         object.key = key;
         _key = key;
-        callback(null, object);
-        model.create(object);
+
+        model.create(object, function (err, data) {
+            callback(err, object);
+        });
     });
     
 };
