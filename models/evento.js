@@ -128,24 +128,29 @@ module.exports.generateMessage = function(object, callback) {
         message += intToHex(object.keySala, 2);
         message += intToHex(object.keyBloco, 2);
         message += intToHex(object.keyDisciplina, 2);
-        message += intToHex(new Date(object.timestampBegin).getHours(), 2); // Hora de inicio
+        message += intToHex(new Date(object.timestampBegin).getHours() + 1, 2); // Hora de inicio
 
         message += intToHex(object.keyDocente, 4);
         message += intToHex(object.keyInstuicao, 2);
-        message += intToHex(new Date(object.timestampBegin).getMinutes(), 2); // Minuto de inicio
+        message += intToHex(new Date(object.timestampBegin).getMinutes() + 1, 2); // Minuto de inicio
 
         message += intToHex(object.keyCampus, 2);
         message += intToHex(object.keyDisciplinaPrevious, 2);
         message += intToHex(object.keyDisciplinaNext, 2);
-        message += intToHex(new Date(object.timestampEnd).getHours(), 2); // Hora de fim
+        message += intToHex(new Date(object.timestampEnd).getHours() + 1, 2); // Hora de fim
 
         message += intToHex(object.keyHistorico, 2);
         message += intToHex(1, 2);
         message += intToHex(1, 2);
-        message += intToHex(new Date(object.timestampEnd).getMinutes(), 2); // Minuto de fim
+        message += intToHex(new Date(object.timestampEnd).getMinutes() + 1, 2); // Minuto de fim
 
         callback(message);
         //console.log("Message: ", message.length);
     });
 
 }
+
+// 0001000a
+// 0000000a
+// 0000000a
+// 0001010a
